@@ -4,13 +4,18 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // API Constants
-  // Using free MockAPI for development
-  // MockAPI.io provides a free JSON API endpoint for testing
-  // Visit: https://mockapi.io/
-  static const String baseUrl =
-      'https://67939e4c22e3f86c3e3d2a26.mockapi.io/api/v1';
+  // OpenCelliD API for real cellular tower data
+  static const String baseUrl = 'https://api.opencellid.org';
+  static const String openCellIdApiKey = 'pk.df5fc0383e061f68315bf47b32c93790';
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
+  
+  // API Endpoints
+  static const String cellTowerEndpoint = '/cell/get';
+  static const String cellMeasureEndpoint = '/cell/measure';
+  
+  // Development mode (set to false to use real API)
+  static const bool useMockData = false;
 
   // Map Constants
   static const double defaultZoom = 15.0;

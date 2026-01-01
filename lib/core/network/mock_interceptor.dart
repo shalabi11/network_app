@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:dio/dio.dart';
+import '../constants/app_constants.dart';
 
 /// Mock interceptor for development and testing
 /// Provides sample tower data without requiring a backend API
+/// Only active when AppConstants.useMockData is true
 class MockInterceptor extends Interceptor {
   final Random _random = Random();
 
@@ -11,8 +13,14 @@ class MockInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // Skip mock interception if we're using real API
+    if (!AppConstants.useMockData) {
+      return handler.next(options);
+    }
+
     // Intercept tower-related requests
-    if (options.path.contains('/towers/nearby')) {
+    if (options.path.contains('/towers/nearby') || 
+        options.path.contains(AppConstants.cellTowerEndpoint)) {
       // Simulate realistic network delay
       await Future.delayed(const Duration(milliseconds: 200));
 

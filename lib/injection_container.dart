@@ -78,12 +78,19 @@ Future<void> init() async {
       ),
     );
 
-    // Add mock interceptor for development/testing
-    dio.interceptors.add(MockInterceptor());
+    // Add mock interceptor only in development mode
+    if (AppConstants.useMockData) {
+      dio.interceptors.add(MockInterceptor());
+    }
 
-    // Add logging interceptor
+    // Add logging interceptor in debug mode
     dio.interceptors.add(
-      LogInterceptor(requestBody: true, responseBody: true, error: true),
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        error: true,
+        logPrint: (obj) => AppLogger.debug(obj.toString()),
+      ),
     );
 
     return dio;
