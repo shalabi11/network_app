@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:equatable/equatable.dart';
 
 class CellularTower extends Equatable {
@@ -37,11 +38,11 @@ class CellularTower extends Equatable {
     final double dLon = _toRadians(this.longitude - longitude);
     
     final double a = 
-        (dLat / 2).sin() * (dLat / 2).sin() +
-        _toRadians(latitude).cos() * _toRadians(this.latitude).cos() *
-        (dLon / 2).sin() * (dLon / 2).sin();
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(latitude)) * cos(_toRadians(this.latitude)) *
+        sin(dLon / 2) * sin(dLon / 2);
     
-    final double c = 2 * a.sqrt().asin();
+    final double c = 2 * asin(sqrt(a));
     return earthRadius * c;
   }
   
