@@ -63,7 +63,7 @@ class TowerBloc extends Bloc<TowerEvent, TowerState> {
     List<CellularTower> currentTowers = [];
     double? userLat;
     double? userLon;
-    
+
     if (state is TowerLoaded) {
       currentTowers = (state as TowerLoaded).towers;
       userLat = (state as TowerLoaded).userLatitude;
@@ -79,24 +79,28 @@ class TowerBloc extends Bloc<TowerEvent, TowerState> {
         AppLogger.error('Failed to ping tower: ${failure.message}');
         if (currentTowers.isNotEmpty) {
           // Return to loaded state with towers
-          emit(TowerLoaded(
-            towers: currentTowers,
-            userLatitude: userLat,
-            userLongitude: userLon,
-          ));
+          emit(
+            TowerLoaded(
+              towers: currentTowers,
+              userLatitude: userLat,
+              userLongitude: userLon,
+            ),
+          );
         } else {
           emit(TowerError(failure.message));
         }
       },
       (latency) {
         AppLogger.info('Tower pinged successfully: ${latency}ms');
-        emit(TowerPinged(
-          towerId: event.towerId,
-          latency: latency,
-          towers: currentTowers,
-          userLatitude: userLat,
-          userLongitude: userLon,
-        ));
+        emit(
+          TowerPinged(
+            towerId: event.towerId,
+            latency: latency,
+            towers: currentTowers,
+            userLatitude: userLat,
+            userLongitude: userLon,
+          ),
+        );
       },
     );
   }

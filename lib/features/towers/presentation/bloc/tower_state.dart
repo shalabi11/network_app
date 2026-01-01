@@ -61,5 +61,11 @@ class TowerPinged extends TowerState {
   });
 
   @override
-  List<Object?> get props => [towerId, latency, towers, userLatitude, userLongitude];
+  List<Object?> get props => [
+    towerId,
+    latency,
+    towers,
+    userLatitude,
+    userLongitude,
+  ];
 }

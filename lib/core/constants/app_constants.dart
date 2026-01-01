@@ -9,11 +9,11 @@ class AppConstants {
   static const String openCellIdApiKey = 'pk.df5fc0383e061f68315bf47b32c93790';
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
-  
+
   // API Endpoints
   static const String cellTowerEndpoint = '/cell/get';
   static const String cellMeasureEndpoint = '/cell/measure';
-  
+
   // Development mode (set to false to use real API)
   static const bool useMockData = false;
 

@@ -141,10 +141,10 @@ class _ListViewScreenState extends State<ListViewScreen> {
           }
 
           if (state is TowerLoaded || state is TowerPinged) {
-            final towers = state is TowerLoaded 
-                ? state.towers 
+            final towers = state is TowerLoaded
+                ? state.towers
                 : (state as TowerPinged).towers;
-            
+
             if (towers.isEmpty) {
               return EmptyStateWidget(
                 message: localizations.noTowers,

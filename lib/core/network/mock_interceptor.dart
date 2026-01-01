@@ -19,7 +19,7 @@ class MockInterceptor extends Interceptor {
     }
 
     // Intercept tower-related requests
-    if (options.path.contains('/towers/nearby') || 
+    if (options.path.contains('/towers/nearby') ||
         options.path.contains(AppConstants.cellTowerEndpoint)) {
       // Simulate realistic network delay
       await Future.delayed(const Duration(milliseconds: 200));
@@ -125,7 +125,9 @@ class MockInterceptor extends Interceptor {
       final status = statuses[_random.nextInt(statuses.length)];
       final isActive = status == 'active';
       final networkType = networkTypes[_random.nextInt(networkTypes.length)];
-      final signalStrength = isActive ? 60 + _random.nextInt(40) : 30 + _random.nextInt(30);
+      final signalStrength = isActive
+          ? 60 + _random.nextInt(40)
+          : 30 + _random.nextInt(30);
 
       towers.add({
         'id': (i + 1).toString(),
@@ -136,9 +138,15 @@ class MockInterceptor extends Interceptor {
         'signalStrength': signalStrength,
         'status': status,
         'networkType': networkType,
-        'pingLatency': isActive ? 15 + _random.nextInt(35) : 50 + _random.nextInt(50),
-        'uploadSpeed': isActive ? 10.0 + _random.nextDouble() * 30 : 2.0 + _random.nextDouble() * 8,
-        'downloadSpeed': isActive ? 30.0 + _random.nextDouble() * 70 : 10.0 + _random.nextDouble() * 20,
+        'pingLatency': isActive
+            ? 15 + _random.nextInt(35)
+            : 50 + _random.nextInt(50),
+        'uploadSpeed': isActive
+            ? 10.0 + _random.nextDouble() * 30
+            : 2.0 + _random.nextDouble() * 8,
+        'downloadSpeed': isActive
+            ? 30.0 + _random.nextDouble() * 70
+            : 10.0 + _random.nextDouble() * 20,
         'lastUpdated': DateTime.now().toIso8601String(),
       });
     }
