@@ -8,7 +8,6 @@ import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/error_widget.dart' as app_error;
 import '../../../../core/widgets/loading_shimmer.dart';
 import '../../../../core/widgets/tower_card.dart';
-import '../../../../injection_container.dart';
 import '../../domain/entities/cellular_tower.dart';
 import '../bloc/tower_bloc.dart';
 import '../bloc/tower_event.dart';

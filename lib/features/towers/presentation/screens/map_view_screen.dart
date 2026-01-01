@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/error_widget.dart' as app_error;
-import '../../../../injection_container.dart';
 import '../../domain/entities/cellular_tower.dart';
 import '../bloc/tower_bloc.dart';
 import '../bloc/tower_event.dart';

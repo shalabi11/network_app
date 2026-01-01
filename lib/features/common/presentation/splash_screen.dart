@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../core/constants/asset_constants.dart';
 import '../../../injection_container.dart';
 import 'home_screen.dart';
 import 'onboarding_screen.dart';
