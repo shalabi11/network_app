@@ -14,7 +14,7 @@ class CellularTower extends Equatable {
   final double? uploadSpeed; // in Mbps
   final double? downloadSpeed; // in Mbps
   final DateTime? lastUpdated;
-  
+
   const CellularTower({
     required this.id,
     required this.name,
@@ -29,27 +29,29 @@ class CellularTower extends Equatable {
     this.downloadSpeed,
     this.lastUpdated,
   });
-  
+
   double distanceFrom(double latitude, double longitude) {
     // Haversine formula to calculate distance
     const double earthRadius = 6371; // km
-    
+
     final double dLat = _toRadians(this.latitude - latitude);
     final double dLon = _toRadians(this.longitude - longitude);
-    
-    final double a = 
+
+    final double a =
         sin(dLat / 2) * sin(dLat / 2) +
-        cos(_toRadians(latitude)) * cos(_toRadians(this.latitude)) *
-        sin(dLon / 2) * sin(dLon / 2);
-    
+        cos(_toRadians(latitude)) *
+            cos(_toRadians(this.latitude)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+
     final double c = 2 * asin(sqrt(a));
     return earthRadius * c;
   }
-  
+
   double _toRadians(double degrees) {
     return degrees * 3.14159265359 / 180;
   }
-  
+
   CellularTower copyWith({
     String? id,
     String? name,
@@ -79,7 +81,7 @@ class CellularTower extends Equatable {
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );
   }
-  
+
   @override
   List<Object?> get props => [
     id,

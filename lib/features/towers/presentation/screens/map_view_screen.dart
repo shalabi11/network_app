@@ -14,7 +14,7 @@ import '../../../settings/presentation/cubit/language_cubit.dart';
 
 class MapViewScreen extends StatefulWidget {
   const MapViewScreen({Key? key}) : super(key: key);
-  
+
   @override
   State<MapViewScreen> createState() => _MapViewScreenState();
 }
@@ -23,16 +23,16 @@ class _MapViewScreenState extends State<MapViewScreen> {
   GoogleMapController? _mapController;
   Position? _currentPosition;
   Set<Marker> _markers = {};
-  
+
   @override
   void initState() {
     super.initState();
     _requestPermissionAndLoadTowers();
   }
-  
+
   Future<void> _requestPermissionAndLoadTowers() async {
     final status = await Permission.location.request();
-    
+
     if (status.isGranted) {
       await _getCurrentLocation();
     } else {
@@ -43,37 +43,37 @@ class _MapViewScreenState extends State<MapViewScreen> {
       }
     }
   }
-  
+
   Future<void> _getCurrentLocation() async {
     try {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      
+
       setState(() {
         _currentPosition = position;
       });
-      
+
       if (mounted) {
         context.read<TowerBloc>().add(
-              LoadNearbyTowers(
-                latitude: position.latitude,
-                longitude: position.longitude,
-              ),
-            );
+          LoadNearbyTowers(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error getting location: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error getting location: $e')));
       }
     }
   }
-  
+
   void _createMarkers(List<CellularTower> towers) {
     final markers = <Marker>{};
-    
+
     for (final tower in towers) {
       markers.add(
         Marker(
@@ -92,7 +92,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
         ),
       );
     }
-    
+
     if (_currentPosition != null) {
       markers.add(
         Marker(
@@ -101,23 +101,21 @@ class _MapViewScreenState extends State<MapViewScreen> {
             _currentPosition!.latitude,
             _currentPosition!.longitude,
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueBlue,
-          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
           infoWindow: const InfoWindow(title: 'My Location'),
         ),
       );
     }
-    
+
     setState(() {
       _markers = markers;
     });
   }
-  
+
   void _showTowerDetails(CellularTower tower) {
     final languageCode = context.read<LanguageCubit>().state;
     final localizations = AppLocalizations(languageCode);
-    
+
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -187,7 +185,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
       ),
     );
   }
-  
+
   Widget _buildDetailItem(IconData icon, String label, String value) {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
@@ -197,28 +195,22 @@ class _MapViewScreenState extends State<MapViewScreen> {
           SizedBox(width: 12.w),
           Text(
             '$label: ',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
           ),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
           ),
         ],
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final languageCode = context.watch<LanguageCubit>().state;
     final localizations = AppLocalizations(languageCode);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.mapViewTitle),
@@ -246,11 +238,11 @@ class _MapViewScreenState extends State<MapViewScreen> {
             onPressed: _currentPosition != null
                 ? () {
                     context.read<TowerBloc>().add(
-                          RefreshTowers(
-                            latitude: _currentPosition!.latitude,
-                            longitude: _currentPosition!.longitude,
-                          ),
-                        );
+                      RefreshTowers(
+                        latitude: _currentPosition!.latitude,
+                        longitude: _currentPosition!.longitude,
+                      ),
+                    );
                   }
                 : null,
           ),
@@ -261,27 +253,24 @@ class _MapViewScreenState extends State<MapViewScreen> {
           if (state is TowerLoaded) {
             _createMarkers(state.towers);
           } else if (state is TowerPinged) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Ping: ${state.latency}ms'),
-              ),
-            );
+            _createMarkers(state.towers);
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Ping: ${state.latency}ms')));
           }
         },
         builder: (context, state) {
           if (_currentPosition == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
-          
+
           if (state is TowerError) {
             return app_error.ErrorWidget(
               message: state.message,
               onRetry: _getCurrentLocation,
             );
           }
-          
+
           return GoogleMap(
             initialCameraPosition: CameraPosition(
               target: LatLng(
@@ -301,7 +290,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
       ),
     );
   }
-  
+
   @override
   void dispose() {
     _mapController?.dispose();

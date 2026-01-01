@@ -20,7 +20,7 @@ void main() {
   late MockGetNearbyTowers mockGetNearbyTowers;
   late MockPingTower mockPingTower;
   late MockTowerRepository mockTowerRepository;
-  
+
   setUp(() {
     mockGetNearbyTowers = MockGetNearbyTowers();
     mockPingTower = MockPingTower();
@@ -31,14 +31,14 @@ void main() {
       towerRepository: mockTowerRepository,
     );
   });
-  
+
   tearDown(() {
     bloc.close();
   });
-  
+
   const testLatitude = 31.5;
   const testLongitude = 34.5;
-  
+
   final testTowers = [
     const CellularTower(
       id: '1',
@@ -50,23 +50,26 @@ void main() {
       status: 'online',
     ),
   ];
-  
+
   group('LoadNearbyTowers', () {
     test('initial state should be TowerInitial', () {
       expect(bloc.state, TowerInitial());
     });
-    
+
     blocTest<TowerBloc, TowerState>(
       'should emit [TowerLoading, TowerLoaded] when data is gotten successfully',
       build: () {
-        when(mockGetNearbyTowers(any))
-            .thenAnswer((_) async => Right(testTowers));
+        when(
+          mockGetNearbyTowers(any),
+        ).thenAnswer((_) async => Right(testTowers));
         return bloc;
       },
-      act: (bloc) => bloc.add(const LoadNearbyTowers(
-        latitude: testLatitude,
-        longitude: testLongitude,
-      )),
+      act: (bloc) => bloc.add(
+        const LoadNearbyTowers(
+          latitude: testLatitude,
+          longitude: testLongitude,
+        ),
+      ),
       expect: () => [
         TowerLoading(),
         TowerLoaded(
@@ -76,34 +79,38 @@ void main() {
         ),
       ],
     );
-    
+
     blocTest<TowerBloc, TowerState>(
       'should emit [TowerLoading, TowerError] when getting data fails',
       build: () {
-        when(mockGetNearbyTowers(any))
-            .thenAnswer((_) async => const Left(NetworkFailure()));
+        when(
+          mockGetNearbyTowers(any),
+        ).thenAnswer((_) async => const Left(NetworkFailure()));
         return bloc;
       },
-      act: (bloc) => bloc.add(const LoadNearbyTowers(
-        latitude: testLatitude,
-        longitude: testLongitude,
-      )),
+      act: (bloc) => bloc.add(
+        const LoadNearbyTowers(
+          latitude: testLatitude,
+          longitude: testLongitude,
+        ),
+      ),
       expect: () => [
         TowerLoading(),
         const TowerError('No internet connection'),
       ],
     );
   });
-  
+
   group('PingTowerEvent', () {
     const testTowerId = '1';
     const testLatency = 50;
-    
+
     blocTest<TowerBloc, TowerState>(
       'should emit [TowerPinging, TowerPinged] when ping is successful',
       build: () {
-        when(mockPingTower(any))
-            .thenAnswer((_) async => const Right(testLatency));
+        when(
+          mockPingTower(any),
+        ).thenAnswer((_) async => const Right(testLatency));
         return bloc;
       },
       act: (bloc) => bloc.add(const PingTowerEvent(testTowerId)),
@@ -112,12 +119,13 @@ void main() {
         const TowerPinged(towerId: testTowerId, latency: testLatency),
       ],
     );
-    
+
     blocTest<TowerBloc, TowerState>(
       'should emit [TowerPinging, TowerError] when ping fails',
       build: () {
-        when(mockPingTower(any))
-            .thenAnswer((_) async => const Left(NetworkFailure()));
+        when(
+          mockPingTower(any),
+        ).thenAnswer((_) async => const Left(NetworkFailure()));
         return bloc;
       },
       act: (bloc) => bloc.add(const PingTowerEvent(testTowerId)),

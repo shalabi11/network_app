@@ -5,11 +5,11 @@ import '../../../../core/constants/app_constants.dart';
 
 class ThemeCubit extends Cubit<ThemeMode> {
   final SharedPreferences prefs;
-  
+
   ThemeCubit(this.prefs) : super(ThemeMode.system) {
     _loadTheme();
   }
-  
+
   void _loadTheme() {
     final themeModeString = prefs.getString(AppConstants.keyThemeMode);
     if (themeModeString != null) {
@@ -25,19 +25,19 @@ class ThemeCubit extends Cubit<ThemeMode> {
       }
     }
   }
-  
+
   Future<void> changeTheme(ThemeMode themeMode) async {
     await prefs.setString(
       AppConstants.keyThemeMode,
       themeMode == ThemeMode.light
           ? 'light'
           : themeMode == ThemeMode.dark
-              ? 'dark'
-              : 'system',
+          ? 'dark'
+          : 'system',
     );
     emit(themeMode);
   }
-  
+
   bool get isDarkMode => state == ThemeMode.dark;
   bool get isLightMode => state == ThemeMode.light;
   bool get isSystemMode => state == ThemeMode.system;

@@ -9,16 +9,14 @@ import '../cubit/theme_cubit.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     final languageCode = context.watch<LanguageCubit>().state;
     final localizations = AppLocalizations(languageCode);
-    
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.settingsTitle),
-      ),
+      appBar: AppBar(title: Text(localizations.settingsTitle)),
       body: ListView(
         children: [
           _buildSectionHeader(localizations.themeSettings, context),
@@ -111,10 +109,14 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   SwitchListTile(
                     title: Text(localizations.backgroundUpdates),
-                    subtitle: const Text('Enable background network monitoring'),
+                    subtitle: const Text(
+                      'Enable background network monitoring',
+                    ),
                     value: state.backgroundUpdatesEnabled,
                     onChanged: (value) {
-                      context.read<SettingsCubit>().toggleBackgroundUpdates(value);
+                      context.read<SettingsCubit>().toggleBackgroundUpdates(
+                        value,
+                      );
                     },
                   ),
                 ],
@@ -148,7 +150,7 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildSectionHeader(String title, BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),

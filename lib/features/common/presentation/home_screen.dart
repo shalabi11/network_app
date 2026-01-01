@@ -8,16 +8,16 @@ import '../../../core/localization/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-  
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  
+
   late final List<Widget> _screens;
-  
+
   @override
   void initState() {
     super.initState();
@@ -27,13 +27,13 @@ class _HomeScreenState extends State<HomeScreen> {
       const SettingsScreen(),
     ];
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LanguageCubit, String>(
       builder: (context, languageCode) {
         final localizations = AppLocalizations(languageCode);
-        
+
         return Scaffold(
           body: _screens[_currentIndex],
           bottomNavigationBar: BottomNavigationBar(

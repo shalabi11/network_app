@@ -5,9 +5,9 @@ import '../repositories/tower_repository.dart';
 
 class PingTower implements UseCase<int, PingTowerParams> {
   final TowerRepository repository;
-  
+
   PingTower(this.repository);
-  
+
   @override
   Future<Either<Failure, int>> call(PingTowerParams params) async {
     return await repository.pingTower(params.towerId);
@@ -16,6 +16,6 @@ class PingTower implements UseCase<int, PingTowerParams> {
 
 class PingTowerParams {
   final String towerId;
-  
+
   PingTowerParams({required this.towerId});
 }

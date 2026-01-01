@@ -13,16 +13,16 @@ import 'get_nearby_towers_test.mocks.dart';
 void main() {
   late GetNearbyTowers usecase;
   late MockTowerRepository mockTowerRepository;
-  
+
   setUp(() {
     mockTowerRepository = MockTowerRepository();
     usecase = GetNearbyTowers(mockTowerRepository);
   });
-  
+
   const testLatitude = 31.5;
   const testLongitude = 34.5;
   const testRadiusKm = 10.0;
-  
+
   final testTowers = [
     const CellularTower(
       id: '1',
@@ -43,55 +43,67 @@ void main() {
       status: 'offline',
     ),
   ];
-  
+
   test('should get nearby towers from the repository', () async {
     // arrange
-    when(mockTowerRepository.getNearbyTowers(
-      latitude: anyNamed('latitude'),
-      longitude: anyNamed('longitude'),
-      radiusKm: anyNamed('radiusKm'),
-    )).thenAnswer((_) async => Right(testTowers));
-    
+    when(
+      mockTowerRepository.getNearbyTowers(
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+        radiusKm: anyNamed('radiusKm'),
+      ),
+    ).thenAnswer((_) async => Right(testTowers));
+
     // act
-    final result = await usecase(GetNearbyTowersParams(
-      latitude: testLatitude,
-      longitude: testLongitude,
-      radiusKm: testRadiusKm,
-    ));
-    
+    final result = await usecase(
+      GetNearbyTowersParams(
+        latitude: testLatitude,
+        longitude: testLongitude,
+        radiusKm: testRadiusKm,
+      ),
+    );
+
     // assert
     expect(result, Right(testTowers));
-    verify(mockTowerRepository.getNearbyTowers(
-      latitude: testLatitude,
-      longitude: testLongitude,
-      radiusKm: testRadiusKm,
-    ));
+    verify(
+      mockTowerRepository.getNearbyTowers(
+        latitude: testLatitude,
+        longitude: testLongitude,
+        radiusKm: testRadiusKm,
+      ),
+    );
     verifyNoMoreInteractions(mockTowerRepository);
   });
-  
+
   test('should return failure when repository fails', () async {
     // arrange
     const testFailure = NetworkFailure('No internet connection');
-    when(mockTowerRepository.getNearbyTowers(
-      latitude: anyNamed('latitude'),
-      longitude: anyNamed('longitude'),
-      radiusKm: anyNamed('radiusKm'),
-    )).thenAnswer((_) async => const Left(testFailure));
-    
+    when(
+      mockTowerRepository.getNearbyTowers(
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+        radiusKm: anyNamed('radiusKm'),
+      ),
+    ).thenAnswer((_) async => const Left(testFailure));
+
     // act
-    final result = await usecase(GetNearbyTowersParams(
-      latitude: testLatitude,
-      longitude: testLongitude,
-      radiusKm: testRadiusKm,
-    ));
-    
+    final result = await usecase(
+      GetNearbyTowersParams(
+        latitude: testLatitude,
+        longitude: testLongitude,
+        radiusKm: testRadiusKm,
+      ),
+    );
+
     // assert
     expect(result, const Left(testFailure));
-    verify(mockTowerRepository.getNearbyTowers(
-      latitude: testLatitude,
-      longitude: testLongitude,
-      radiusKm: testRadiusKm,
-    ));
+    verify(
+      mockTowerRepository.getNearbyTowers(
+        latitude: testLatitude,
+        longitude: testLongitude,
+        radiusKm: testRadiusKm,
+      ),
+    );
     verifyNoMoreInteractions(mockTowerRepository);
   });
 }

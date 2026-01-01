@@ -8,7 +8,7 @@ import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
-  
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -19,26 +19,26 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _navigate();
   }
-  
+
   Future<void> _navigate() async {
     await Future.delayed(const Duration(seconds: 3));
-    
+
     if (!mounted) return;
-    
+
     final prefs = sl<SharedPreferences>();
     final isFirstLaunch = prefs.getBool(AppConstants.keyFirstLaunch) ?? true;
-    
+
     if (isFirstLaunch) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const OnboardingScreen()),
       );
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,11 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Animated logo or icon
-            Icon(
-              Icons.cell_tower,
-              size: 120.sp,
-              color: Colors.white,
-            ),
+            Icon(Icons.cell_tower, size: 120.sp, color: Colors.white),
             SizedBox(height: 24.h),
             Text(
               AppConstants.appName,
@@ -76,10 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(height: 8.h),
             Text(
               'Monitor Network Performance',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 16.sp, color: Colors.white70),
             ),
             SizedBox(height: 48.h),
             CircularProgressIndicator(

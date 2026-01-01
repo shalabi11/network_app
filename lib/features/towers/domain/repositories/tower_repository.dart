@@ -8,12 +8,12 @@ abstract class TowerRepository {
     required double longitude,
     double radiusKm = 10.0,
   });
-  
+
   Future<Either<Failure, CellularTower>> getTowerById(String id);
-  
+
   Future<Either<Failure, int>> pingTower(String towerId);
-  
+
   Future<Either<Failure, CellularTower>> updateTowerStats(String towerId);
-  
+
   Future<Either<Failure, List<CellularTower>>> getCachedTowers();
 }

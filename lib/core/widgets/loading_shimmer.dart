@@ -6,14 +6,14 @@ class LoadingShimmer extends StatelessWidget {
   final double width;
   final double height;
   final BorderRadius? borderRadius;
-  
+
   const LoadingShimmer({
     Key? key,
     required this.width,
     required this.height,
     this.borderRadius,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
@@ -33,7 +33,7 @@ class LoadingShimmer extends StatelessWidget {
 
 class TowerListShimmer extends StatelessWidget {
   const TowerListShimmer({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(

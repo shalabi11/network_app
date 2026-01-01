@@ -9,19 +9,19 @@ abstract class TowerRemoteDataSource {
     required double longitude,
     double radiusKm = 10.0,
   });
-  
+
   Future<CellularTowerModel> getTowerById(String id);
-  
+
   Future<int> pingTower(String towerId);
-  
+
   Future<CellularTowerModel> updateTowerStats(String towerId);
 }
 
 class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
   final Dio dio;
-  
+
   TowerRemoteDataSourceImpl(this.dio);
-  
+
   @override
   Future<List<CellularTowerModel>> getNearbyTowers({
     required double latitude,
@@ -37,7 +37,7 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
           'radius': radiusKm,
         },
       );
-      
+
       if (response.statusCode == 200) {
         final List<dynamic> towersJson = response.data['towers'];
         return towersJson
@@ -61,12 +61,12 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
       throw ServerException('Unexpected error occurred');
     }
   }
-  
+
   @override
   Future<CellularTowerModel> getTowerById(String id) async {
     try {
       final response = await dio.get('/towers/$id');
-      
+
       if (response.statusCode == 200) {
         return CellularTowerModel.fromJson(response.data);
       } else {
@@ -80,14 +80,14 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
       throw ServerException('Unexpected error occurred');
     }
   }
-  
+
   @override
   Future<int> pingTower(String towerId) async {
     try {
       final startTime = DateTime.now();
       final response = await dio.post('/towers/$towerId/ping');
       final endTime = DateTime.now();
-      
+
       if (response.statusCode == 200) {
         return endTime.difference(startTime).inMilliseconds;
       } else {
@@ -101,12 +101,12 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
       throw ServerException('Unexpected error occurred');
     }
   }
-  
+
   @override
   Future<CellularTowerModel> updateTowerStats(String towerId) async {
     try {
       final response = await dio.put('/towers/$towerId/stats');
-      
+
       if (response.statusCode == 200) {
         return CellularTowerModel.fromJson(response.data);
       } else {

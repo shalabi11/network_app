@@ -10,7 +10,7 @@ class TowerCard extends StatelessWidget {
   final bool showDetails;
   final double? userLatitude;
   final double? userLongitude;
-  
+
   const TowerCard({
     Key? key,
     required this.tower,
@@ -20,13 +20,13 @@ class TowerCard extends StatelessWidget {
     this.userLatitude,
     this.userLongitude,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     final distance = (userLatitude != null && userLongitude != null)
         ? tower.distanceFrom(userLatitude!, userLongitude!)
         : null;
-    
+
     return Card(
       elevation: 2,
       child: InkWell(
@@ -86,9 +86,13 @@ class TowerCard extends StatelessWidget {
                   ),
                   SizedBox(width: 8.w),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 2.h,
+                    ),
                     decoration: BoxDecoration(
-                      color: tower.signalStrength.signalStrengthColor.withOpacity(0.2),
+                      color: tower.signalStrength.signalStrengthColor
+                          .withOpacity(0.2),
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Text(
@@ -157,7 +161,7 @@ class TowerCard extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildDetailRow(
     IconData icon,
     String label,
@@ -172,17 +176,11 @@ class TowerCard extends StatelessWidget {
           SizedBox(width: 8.w),
           Text(
             '$label: ',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
           ),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
           ),
         ],
       ),

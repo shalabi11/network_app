@@ -8,7 +8,7 @@ class NetworkStats extends Equatable {
   final String connectionQuality; // excellent, good, fair, weak
   final String networkType; // 4G, 5G, etc.
   final DateTime timestamp;
-  
+
   const NetworkStats({
     required this.signalStrength,
     required this.pingLatency,
@@ -18,7 +18,7 @@ class NetworkStats extends Equatable {
     required this.networkType,
     required this.timestamp,
   });
-  
+
   @override
   List<Object> get props => [
     signalStrength,

@@ -11,13 +11,13 @@ class TowerRepositoryImpl implements TowerRepository {
   final TowerRemoteDataSource remoteDataSource;
   final TowerLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
-  
+
   TowerRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
     required this.networkInfo,
   });
-  
+
   @override
   Future<Either<Failure, List<CellularTower>>> getNearbyTowers({
     required double latitude,
@@ -52,7 +52,7 @@ class TowerRepositoryImpl implements TowerRepository {
       }
     }
   }
-  
+
   @override
   Future<Either<Failure, CellularTower>> getTowerById(String id) async {
     if (await networkInfo.isConnected) {
@@ -76,7 +76,7 @@ class TowerRepositoryImpl implements TowerRepository {
       }
     }
   }
-  
+
   @override
   Future<Either<Failure, int>> pingTower(String towerId) async {
     if (await networkInfo.isConnected) {
@@ -92,9 +92,11 @@ class TowerRepositoryImpl implements TowerRepository {
       return const Left(NetworkFailure('No internet connection'));
     }
   }
-  
+
   @override
-  Future<Either<Failure, CellularTower>> updateTowerStats(String towerId) async {
+  Future<Either<Failure, CellularTower>> updateTowerStats(
+    String towerId,
+  ) async {
     if (await networkInfo.isConnected) {
       try {
         final tower = await remoteDataSource.updateTowerStats(towerId);
@@ -108,7 +110,7 @@ class TowerRepositoryImpl implements TowerRepository {
       return const Left(NetworkFailure('No internet connection'));
     }
   }
-  
+
   @override
   Future<Either<Failure, List<CellularTower>>> getCachedTowers() async {
     try {

@@ -19,12 +19,12 @@ class CellularTowerModel extends CellularTower {
     super.downloadSpeed,
     super.lastUpdated,
   });
-  
+
   factory CellularTowerModel.fromJson(Map<String, dynamic> json) =>
       _$CellularTowerModelFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$CellularTowerModelToJson(this);
-  
+
   factory CellularTowerModel.fromEntity(CellularTower tower) {
     return CellularTowerModel(
       id: tower.id,
@@ -41,7 +41,7 @@ class CellularTowerModel extends CellularTower {
       lastUpdated: tower.lastUpdated,
     );
   }
-  
+
   CellularTower toEntity() {
     return CellularTower(
       id: id,

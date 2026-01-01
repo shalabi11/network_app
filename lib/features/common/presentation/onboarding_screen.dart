@@ -8,7 +8,7 @@ import 'home_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return IntroductionScreen(
@@ -83,15 +83,15 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Future<void> _onDone(BuildContext context) async {
     final prefs = sl<SharedPreferences>();
     await prefs.setBool(AppConstants.keyFirstLaunch, false);
-    
+
     if (!context.mounted) return;
-    
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
-    );
+
+    Navigator.of(
+      context,
+    ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
   }
 }

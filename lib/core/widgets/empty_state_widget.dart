@@ -7,7 +7,7 @@ class EmptyStateWidget extends StatelessWidget {
   final String? animationAsset;
   final VoidCallback? onRetry;
   final String? retryText;
-  
+
   const EmptyStateWidget({
     Key? key,
     required this.message,
@@ -15,7 +15,7 @@ class EmptyStateWidget extends StatelessWidget {
     this.onRetry,
     this.retryText,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -32,18 +32,11 @@ class EmptyStateWidget extends StatelessWidget {
                 fit: BoxFit.contain,
               )
             else
-              Icon(
-                Icons.inbox_outlined,
-                size: 100.sp,
-                color: Colors.grey,
-              ),
+              Icon(Icons.inbox_outlined, size: 100.sp, color: Colors.grey),
             SizedBox(height: 24.h),
             Text(
               message,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[

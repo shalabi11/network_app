@@ -8,14 +8,14 @@ class AppTheme {
   static const Color backgroundLight = Color(0xFFF5F5F5);
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color errorLight = Color(0xFFD32F2F);
-  
+
   // Dark Theme Colors
   static const Color primaryDark = Color(0xFF1976D2);
   static const Color secondaryDark = Color(0xFF0288D1);
   static const Color backgroundDark = Color(0xFF121212);
   static const Color surfaceDark = Color(0xFF1E1E1E);
   static const Color errorDark = Color(0xFFCF6679);
-  
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -58,16 +58,11 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.r),
           ),
-          textStyle: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         filled: true,
         fillColor: Colors.grey[100],
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -80,7 +75,7 @@ class AppTheme {
       ),
     );
   }
-  
+
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
@@ -124,16 +119,11 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.r),
           ),
-          textStyle: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         filled: true,
         fillColor: Colors.grey[900],
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),

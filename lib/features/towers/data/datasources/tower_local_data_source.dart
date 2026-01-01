@@ -12,13 +12,16 @@ abstract class TowerLocalDataSource {
 
 class TowerLocalDataSourceImpl implements TowerLocalDataSource {
   static const String towersBoxName = 'towers';
-  
+
   @override
   Future<List<CellularTowerModel>> getCachedTowers() async {
     try {
       final box = await Hive.openBox<Map>(towersBoxName);
       final towers = box.values
-          .map((json) => CellularTowerModel.fromJson(Map<String, dynamic>.from(json)))
+          .map(
+            (json) =>
+                CellularTowerModel.fromJson(Map<String, dynamic>.from(json)),
+          )
           .toList();
       return towers;
     } catch (e) {
@@ -26,7 +29,7 @@ class TowerLocalDataSourceImpl implements TowerLocalDataSource {
       throw CacheException('Failed to get cached towers');
     }
   }
-  
+
   @override
   Future<void> cacheTowers(List<CellularTowerModel> towers) async {
     try {
@@ -40,7 +43,7 @@ class TowerLocalDataSourceImpl implements TowerLocalDataSource {
       throw CacheException('Failed to cache towers');
     }
   }
-  
+
   @override
   Future<CellularTowerModel?> getCachedTowerById(String id) async {
     try {
@@ -55,7 +58,7 @@ class TowerLocalDataSourceImpl implements TowerLocalDataSource {
       throw CacheException('Failed to get cached tower');
     }
   }
-  
+
   @override
   Future<void> clearCache() async {
     try {

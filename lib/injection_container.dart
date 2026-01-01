@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/constants/app_constants.dart';
+import 'core/network/mock_interceptor.dart';
 import 'core/network/network_info.dart';
 import 'features/settings/presentation/cubit/language_cubit.dart';
 import 'features/settings/presentation/cubit/settings_cubit.dart';
@@ -20,7 +21,7 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // ============== Features ==============
-  
+
   // Bloc
   sl.registerFactory(
     () => TowerBloc(
@@ -29,16 +30,16 @@ Future<void> init() async {
       towerRepository: sl(),
     ),
   );
-  
+
   // Cubit
   sl.registerLazySingleton(() => ThemeCubit(sl()));
   sl.registerLazySingleton(() => LanguageCubit(sl()));
   sl.registerLazySingleton(() => SettingsCubit(sl()));
-  
+
   // Use cases
   sl.registerLazySingleton(() => GetNearbyTowers(sl()));
   sl.registerLazySingleton(() => PingTower(sl()));
-  
+
   // Repository
   sl.registerLazySingleton<TowerRepository>(
     () => TowerRepositoryImpl(
@@ -47,24 +48,22 @@ Future<void> init() async {
       networkInfo: sl(),
     ),
   );
-  
+
   // Data sources
   sl.registerLazySingleton<TowerRemoteDataSource>(
     () => TowerRemoteDataSourceImpl(sl()),
   );
-  
+
   sl.registerLazySingleton<TowerLocalDataSource>(
     () => TowerLocalDataSourceImpl(),
   );
-  
+
   // ============== Core ==============
-  
-  sl.registerLazySingleton<NetworkInfo>(
-    () => NetworkInfoImpl(sl()),
-  );
-  
+
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+
   // ============== External ==============
-  
+
   // Dio
   sl.registerLazySingleton(() {
     final dio = Dio(
@@ -78,22 +77,21 @@ Future<void> init() async {
         },
       ),
     );
-    
-    // Add interceptors
+
+    // Add mock interceptor for development/testing
+    dio.interceptors.add(MockInterceptor());
+
+    // Add logging interceptor
     dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        error: true,
-      ),
+      LogInterceptor(requestBody: true, responseBody: true, error: true),
     );
-    
+
     return dio;
   });
-  
+
   // Connectivity
   sl.registerLazySingleton(() => Connectivity());
-  
+
   // Shared preferences
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
