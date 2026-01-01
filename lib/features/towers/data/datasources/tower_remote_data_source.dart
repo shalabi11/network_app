@@ -106,7 +106,7 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
     }
 
     // Calculate approximate signal strength based on range
-    int signalStrength = 100 - ((range / 100).clamp(0, 70).toInt());
+    int signalStrength = (100 - ((range / 100).clamp(0, 70))).toInt();
     
     return CellularTowerModel(
       id: '$mcc-$mnc-$lac-$cellId',

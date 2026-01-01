@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/network/mock_interceptor.dart';
+import 'core/utils/logger.dart';
 import 'core/network/network_info.dart';
 import 'features/settings/presentation/cubit/language_cubit.dart';
 import 'features/settings/presentation/cubit/settings_cubit.dart';
