@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/logger.dart';
+import '../../domain/entities/cellular_tower.dart';
 import '../../domain/usecases/get_nearby_towers.dart';
 import '../../domain/usecases/ping_tower.dart';
 import '../../../towers/domain/repositories/tower_repository.dart';
