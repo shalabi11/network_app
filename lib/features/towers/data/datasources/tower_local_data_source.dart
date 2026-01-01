@@ -18,7 +18,7 @@ class TowerLocalDataSourceImpl implements TowerLocalDataSource {
     try {
       final box = await Hive.openBox<Map>(towersBoxName);
       final towers = box.values
-          .map((json) => CellularTowerModel.fromJson(Map<String, dynamic>.from(json as Map)))
+          .map((json) => CellularTowerModel.fromJson(Map<String, dynamic>.from(json)))
           .toList();
       return towers;
     } catch (e) {
@@ -47,7 +47,7 @@ class TowerLocalDataSourceImpl implements TowerLocalDataSource {
       final box = await Hive.openBox<Map>(towersBoxName);
       final json = box.get(id);
       if (json != null) {
-        return CellularTowerModel.fromJson(Map<String, dynamic>.from(json as Map));
+        return CellularTowerModel.fromJson(Map<String, dynamic>.from(json));
       }
       return null;
     } catch (e) {
