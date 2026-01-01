@@ -174,7 +174,8 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
             return endTime.difference(startTime).inMilliseconds;
           }
         } on DioException catch (e) {
-          AppLogger.info('API ping failed, using simulated ping', e);
+          AppLogger.info('API ping failed, using simulated ping');
+          AppLogger.debug('Ping error: ${e.message}');
           // Fall through to mock ping
         }
       }
