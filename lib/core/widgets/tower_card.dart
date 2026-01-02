@@ -29,6 +29,7 @@ class TowerCard extends StatelessWidget {
 
     return Card(
       elevation: 2,
+      color: tower.isConnected ? Colors.blue.shade50 : null,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.r),
@@ -44,17 +45,36 @@ class TowerCard extends StatelessWidget {
                     height: 12.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: tower.isAccessible ? Colors.green : Colors.red,
+                      color: tower.isConnected
+                          ? Colors.blue
+                          : (tower.isAccessible ? Colors.green : Colors.red),
                     ),
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Text(
-                      tower.name,
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tower.name,
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                            color: tower.isConnected
+                                ? Colors.blue.shade700
+                                : null,
+                          ),
+                        ),
+                        if (tower.isConnected)
+                          Text(
+                            'Currently Connected',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.blue.shade700,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   if (tower.status == 'online')
@@ -133,14 +153,21 @@ class TowerCard extends StatelessWidget {
                   _buildDetailRow(
                     Icons.download,
                     'Download',
-                    '${tower.downloadSpeed!.toStringAsFixed(1)} Mbps',
+                    '${tower.downloadSpeed!.toStringAsFixed(1)} Mbps / ${(tower.downloadSpeed! / 8).toStringAsFixed(2)} MB/s',
                     context,
                   ),
                 if (tower.uploadSpeed != null)
                   _buildDetailRow(
                     Icons.upload,
                     'Upload',
-                    '${tower.uploadSpeed!.toStringAsFixed(1)} Mbps',
+                    '${tower.uploadSpeed!.toStringAsFixed(1)} Mbps / ${(tower.uploadSpeed! / 8).toStringAsFixed(2)} MB/s',
+                    context,
+                  ),
+                if (tower.operatorName != null)
+                  _buildDetailRow(
+                    Icons.domain,
+                    'Network',
+                    tower.operatorName!,
                     context,
                   ),
               ],

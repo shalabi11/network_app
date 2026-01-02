@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../core/services/cell_info_service.dart';
 import '../models/cellular_tower_model.dart';
 
 abstract class TowerRemoteDataSource {
@@ -32,40 +33,71 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
     double radiusKm = 10.0,
   }) async {
     try {
-      // Try OpenCelliD API first
+      // Try OpenCelliD API first using getInArea endpoint
       if (!AppConstants.useMockData) {
         try {
+          // Calculate bounding box: approximately ±0.1 degrees (~11km)
+          final latMin = latitude - 0.1;
+          final latMax = latitude + 0.1;
+          final lonMin = longitude - 0.1;
+          final lonMax = longitude + 0.1;
+
           final response = await dio.get(
             AppConstants.cellTowerEndpoint,
             queryParameters: {
               'key': AppConstants.openCellIdApiKey,
-              'lat': latitude,
-              'lon': longitude,
+              'BBOX': '$latMin,$lonMin,$latMax,$lonMax',
+              'mcc': AppConstants.countryMCC, // Germany (262)
               'format': 'json',
               'limit': 20,
+              'offset': 0,
             },
             options: Options(
-              sendTimeout: const Duration(seconds: 10),
-              receiveTimeout: const Duration(seconds: 10),
+              // connectTimeout: const Duration(seconds: 60),
+              sendTimeout: const Duration(seconds: 60),
+              receiveTimeout: const Duration(seconds: 60),
             ),
           );
 
           if (response.statusCode == 200) {
             final data = response.data;
 
-            // OpenCelliD returns a single tower or array
-            if (data is List) {
-              return data
-                  .map(
-                    (json) => _convertOpenCellIdToModel(json, latitude, longitude),
-                  )
-                  .toList();
-            } else if (data is Map<String, dynamic>) {
-              return [_convertOpenCellIdToModel(data, latitude, longitude)];
+            // getInArea returns {"count": n, "cells": [...]}
+            if (data is Map<String, dynamic> && data.containsKey('cells')) {
+              final cells = data['cells'] as List;
+              if (cells.isNotEmpty) {
+                AppLogger.info(
+                  'OpenCelliD returned ${cells.length} towers in Germany (MCC 262)',
+                );
+
+                // Get connected cell info to mark the connected tower
+                final connectedCell = await CellInfoService.getConnectedCell();
+                final connectedTowerId = connectedCell?.towerId;
+
+                if (connectedTowerId != null) {
+                  AppLogger.info(
+                    'Currently connected to tower: $connectedTowerId',
+                  );
+                }
+
+                return cells
+                    .map(
+                      (json) => _convertOpenCellIdToModel(
+                        json,
+                        latitude,
+                        longitude,
+                        connectedTowerId,
+                      ),
+                    )
+                    .toList();
+              }
             }
           }
         } on DioException catch (e) {
-          AppLogger.error('OpenCelliD API failed, falling back to mock data', e);
+          AppLogger.error(
+            'OpenCelliD API failed, falling back to mock data',
+            e,
+          );
           // Fall through to mock data generation
         }
       }
@@ -73,7 +105,6 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
       // Generate mock data as fallback
       AppLogger.info('Using mock data for nearby towers');
       return _generateMockTowers(latitude, longitude, 8);
-
     } catch (e) {
       AppLogger.error('Unexpected error fetching nearby towers', e);
       // Return mock data even on unexpected errors
@@ -86,6 +117,7 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
     Map<String, dynamic> data,
     double userLat,
     double userLon,
+    String? connectedTowerId,
   ) {
     // OpenCelliD response format
     final lat = (data['lat'] ?? userLat).toDouble();
@@ -96,6 +128,10 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
     final mnc = data['mnc']?.toString() ?? '';
     final lac = data['lac']?.toString() ?? '';
     final range = data['range']?.toInt() ?? 1000;
+
+    // Generate tower ID
+    final towerId = '$mcc-$mnc-$lac-$cellId';
+    final isConnected = connectedTowerId != null && towerId == connectedTowerId;
 
     // Determine network type from radio field
     String networkType = '4G LTE';
@@ -116,8 +152,8 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
     int signalStrength = (100 - ((range / 100).clamp(0, 70))).toInt();
 
     return CellularTowerModel(
-      id: '$mcc-$mnc-$lac-$cellId',
-      name: 'Cell Tower $cellId',
+      id: towerId,
+      name: isConnected ? 'Connected Tower $cellId' : 'Cell Tower $cellId',
       latitude: lat,
       longitude: lon,
       isAccessible: true,
@@ -128,6 +164,7 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
       uploadSpeed: (15.0 + (signalStrength / 5)).toDouble(),
       downloadSpeed: (30.0 + (signalStrength / 2)).toDouble(),
       lastUpdated: DateTime.now(),
+      isConnected: isConnected,
     );
   }
 
@@ -183,7 +220,6 @@ class TowerRemoteDataSourceImpl implements TowerRemoteDataSource {
       // Simulate ping with random latency
       await Future.delayed(Duration(milliseconds: 50 + _random.nextInt(150)));
       return 15 + _random.nextInt(50);
-
     } catch (e) {
       AppLogger.error('Unexpected error pinging tower', e);
       // Return simulated ping even on error

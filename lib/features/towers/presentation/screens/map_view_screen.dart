@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/error_widget.dart' as app_error;
@@ -20,9 +21,9 @@ class MapViewScreen extends StatefulWidget {
 }
 
 class _MapViewScreenState extends State<MapViewScreen> {
-  GoogleMapController? _mapController;
+  final MapController _mapController = MapController();
   Position? _currentPosition;
-  Set<Marker> _markers = {};
+  final List<Marker> _markers = [];
 
   @override
   void initState() {
@@ -72,44 +73,47 @@ class _MapViewScreenState extends State<MapViewScreen> {
   }
 
   void _createMarkers(List<CellularTower> towers) {
-    final markers = <Marker>{};
+    _markers.clear();
 
     for (final tower in towers) {
-      markers.add(
+      // Use different colors: Blue for connected, Green for accessible, Red for not accessible
+      Color markerColor;
+      if (tower.isConnected) {
+        markerColor = Colors.blue;
+      } else if (tower.isAccessible) {
+        markerColor = Colors.green;
+      } else {
+        markerColor = Colors.red;
+      }
+
+      _markers.add(
         Marker(
-          markerId: MarkerId(tower.id),
-          position: LatLng(tower.latitude, tower.longitude),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            tower.isAccessible
-                ? BitmapDescriptor.hueGreen
-                : BitmapDescriptor.hueRed,
+          point: LatLng(tower.latitude, tower.longitude),
+          width: 40,
+          height: 40,
+          child: GestureDetector(
+            onTap: () => _showTowerDetails(tower),
+            child: Icon(Icons.location_on, color: markerColor, size: 40),
           ),
-          infoWindow: InfoWindow(
-            title: tower.name,
-            snippet: '${tower.signalStrength} dBm - ${tower.status}',
-          ),
-          onTap: () => _showTowerDetails(tower),
         ),
       );
     }
 
     if (_currentPosition != null) {
-      markers.add(
+      _markers.add(
         Marker(
-          markerId: const MarkerId('current_location'),
-          position: LatLng(
+          point: LatLng(
             _currentPosition!.latitude,
             _currentPosition!.longitude,
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          infoWindow: const InfoWindow(title: 'My Location'),
+          width: 40,
+          height: 40,
+          child: const Icon(Icons.my_location, color: Colors.blue, size: 40),
         ),
       );
     }
 
-    setState(() {
-      _markers = markers;
-    });
+    setState(() {});
   }
 
   void _showTowerDetails(CellularTower tower) {
@@ -219,16 +223,12 @@ class _MapViewScreenState extends State<MapViewScreen> {
             icon: const Icon(Icons.my_location),
             onPressed: _currentPosition != null
                 ? () {
-                    _mapController?.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                          target: LatLng(
-                            _currentPosition!.latitude,
-                            _currentPosition!.longitude,
-                          ),
-                          zoom: 15,
-                        ),
+                    _mapController.move(
+                      LatLng(
+                        _currentPosition!.latitude,
+                        _currentPosition!.longitude,
                       ),
+                      15,
                     );
                   }
                 : null,
@@ -271,20 +271,24 @@ class _MapViewScreenState extends State<MapViewScreen> {
             );
           }
 
-          return GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(
+          return FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: LatLng(
                 _currentPosition!.latitude,
                 _currentPosition!.longitude,
               ),
-              zoom: 15,
+              initialZoom: 15,
+              minZoom: 5,
+              maxZoom: 18,
             ),
-            markers: _markers,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            onMapCreated: (controller) {
-              _mapController = controller;
-            },
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.network_app',
+              ),
+              MarkerLayer(markers: _markers),
+            ],
           );
         },
       ),
@@ -293,7 +297,6 @@ class _MapViewScreenState extends State<MapViewScreen> {
 
   @override
   void dispose() {
-    _mapController?.dispose();
     super.dispose();
   }
 }

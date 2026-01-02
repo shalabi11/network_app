@@ -17,6 +17,11 @@ import 'features/towers/domain/repositories/tower_repository.dart';
 import 'features/towers/domain/usecases/get_nearby_towers.dart';
 import 'features/towers/domain/usecases/ping_tower.dart';
 import 'features/towers/presentation/bloc/tower_bloc.dart';
+import 'features/speed_test/data/datasources/speed_test_datasource.dart';
+import 'features/speed_test/data/repositories/speed_test_repository_impl.dart';
+import 'features/speed_test/domain/repositories/speed_test_repository.dart';
+import 'features/speed_test/domain/usecases/start_speed_test.dart';
+import 'features/speed_test/presentation/bloc/speed_test_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -31,6 +36,7 @@ Future<void> init() async {
       towerRepository: sl(),
     ),
   );
+  sl.registerFactory(() => SpeedTestBloc(startSpeedTest: sl()));
 
   // Cubit
   sl.registerLazySingleton(() => ThemeCubit(sl()));
@@ -40,6 +46,7 @@ Future<void> init() async {
   // Use cases
   sl.registerLazySingleton(() => GetNearbyTowers(sl()));
   sl.registerLazySingleton(() => PingTower(sl()));
+  sl.registerLazySingleton(() => StartSpeedTest(sl()));
 
   // Repository
   sl.registerLazySingleton<TowerRepository>(
@@ -49,6 +56,9 @@ Future<void> init() async {
       networkInfo: sl(),
     ),
   );
+  sl.registerLazySingleton<SpeedTestRepository>(
+    () => SpeedTestRepositoryImpl(dataSource: sl()),
+  );
 
   // Data sources
   sl.registerLazySingleton<TowerRemoteDataSource>(
@@ -57,6 +67,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<TowerLocalDataSource>(
     () => TowerLocalDataSourceImpl(),
+  );
+  sl.registerLazySingleton<SpeedTestDataSource>(
+    () => SpeedTestDataSourceImpl(),
   );
 
   // ============== Core ==============
@@ -70,8 +83,9 @@ Future<void> init() async {
     final dio = Dio(
       BaseOptions(
         baseUrl: AppConstants.baseUrl,
-        connectTimeout: AppConstants.connectionTimeout,
-        receiveTimeout: AppConstants.receiveTimeout,
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
+        sendTimeout: const Duration(seconds: 60),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

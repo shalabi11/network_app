@@ -60,6 +60,10 @@ class MyApp extends StatelessWidget {
                     darkTheme: AppTheme.darkTheme,
                     themeMode: themeMode,
                     locale: Locale(languageCode),
+                    supportedLocales: const [
+                      Locale('en'),
+                      Locale('ar'),
+                    ],
                     home: const SplashScreen(),
                   );
                 },

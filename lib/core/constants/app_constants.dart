@@ -11,16 +11,19 @@ class AppConstants {
   static const Duration receiveTimeout = Duration(seconds: 30);
 
   // API Endpoints
-  static const String cellTowerEndpoint = '/cell/get';
+  static const String cellTowerEndpoint = '/cell/getInArea';
   static const String cellMeasureEndpoint = '/cell/measure';
+
+  // Country-specific settings (Germany - MCC 262)
+  static const int countryMCC = 262; // Germany
 
   // Development mode (set to false to use real API)
   static const bool useMockData = false;
 
   // Map Constants
   static const double defaultZoom = 15.0;
-  static const double defaultLatitude = 31.5;
-  static const double defaultLongitude = 34.5;
+  static const double defaultLatitude = 52.52; // Berlin, Germany
+  static const double defaultLongitude = 13.405;
 
   // Storage Keys
   static const String keyLanguage = 'language';

@@ -15,7 +15,7 @@ import '../bloc/tower_state.dart';
 import '../../../settings/presentation/cubit/language_cubit.dart';
 
 class ListViewScreen extends StatefulWidget {
-  const ListViewScreen({Key? key}) : super(key: key);
+  const ListViewScreen({super.key});
 
   @override
   State<ListViewScreen> createState() => _ListViewScreenState();
@@ -192,7 +192,7 @@ class _ListViewScreenState extends State<ListViewScreen> {
             );
           }
 
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );

@@ -14,7 +14,7 @@ rootProject.layout.buildDirectory.value(newBuildDir)
 
 subprojects {
     // Skip build directory override for Flutter plugin projects
-    if (!project.name.startsWith("flutter_")) {
+    if (!project.name.startsWith("flutter_") && !buildFile.toString().contains("Pub") && !buildFile.toString().contains("pub.dev")) {
         val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
         project.layout.buildDirectory.value(newSubprojectBuildDir)
     }

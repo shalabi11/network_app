@@ -25,6 +25,7 @@ class AppLocalizations {
       'map': 'Map',
       'list': 'List',
       'settings': 'Settings',
+      'speed_test': 'Speed Test',
 
       // Map View
       'map_view_title': 'Cellular Towers Map',
@@ -142,6 +143,7 @@ class AppLocalizations {
       'map': 'الخريطة',
       'list': 'القائمة',
       'settings': 'الإعدادات',
+      'speed_test': 'اختبار السرعة',
 
       // Map View
       'map_view_title': 'خريطة الأبراج الخلوية',
@@ -258,6 +260,7 @@ class AppLocalizations {
   String get map => translate('map');
   String get list => translate('list');
   String get settings => translate('settings');
+  String get speedTest => translate('speed_test');
 
   // Map View
   String get mapViewTitle => translate('map_view_title');

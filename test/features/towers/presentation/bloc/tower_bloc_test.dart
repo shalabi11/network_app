@@ -116,7 +116,11 @@ void main() {
       act: (bloc) => bloc.add(const PingTowerEvent(testTowerId)),
       expect: () => [
         const TowerPinging(testTowerId),
-        const TowerPinged(towerId: testTowerId, latency: testLatency),
+        TowerPinged(
+          towerId: testTowerId,
+          latency: testLatency,
+          towers: testTowers,
+        ),
       ],
     );
 

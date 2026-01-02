@@ -14,10 +14,12 @@ class CellularTowerModel extends CellularTower {
     required super.signalStrength,
     required super.status,
     super.networkType,
+    super.operatorName,
     super.pingLatency,
     super.uploadSpeed,
     super.downloadSpeed,
     super.lastUpdated,
+    super.isConnected = false,
   });
 
   factory CellularTowerModel.fromJson(Map<String, dynamic> json) =>
@@ -35,10 +37,12 @@ class CellularTowerModel extends CellularTower {
       signalStrength: tower.signalStrength,
       status: tower.status,
       networkType: tower.networkType,
+      operatorName: tower.operatorName,
       pingLatency: tower.pingLatency,
       uploadSpeed: tower.uploadSpeed,
       downloadSpeed: tower.downloadSpeed,
       lastUpdated: tower.lastUpdated,
+      isConnected: tower.isConnected,
     );
   }
 
@@ -52,10 +56,12 @@ class CellularTowerModel extends CellularTower {
       signalStrength: signalStrength,
       status: status,
       networkType: networkType,
+      operatorName: operatorName,
       pingLatency: pingLatency,
       uploadSpeed: uploadSpeed,
       downloadSpeed: downloadSpeed,
       lastUpdated: lastUpdated,
+      isConnected: isConnected,
     );
   }
 }

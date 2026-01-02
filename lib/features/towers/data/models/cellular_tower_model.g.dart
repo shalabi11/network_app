@@ -16,12 +16,14 @@ CellularTowerModel _$CellularTowerModelFromJson(Map<String, dynamic> json) =>
       signalStrength: (json['signalStrength'] as num).toInt(),
       status: json['status'] as String,
       networkType: json['networkType'] as String?,
+      operatorName: json['operatorName'] as String?,
       pingLatency: (json['pingLatency'] as num?)?.toInt(),
       uploadSpeed: (json['uploadSpeed'] as num?)?.toDouble(),
       downloadSpeed: (json['downloadSpeed'] as num?)?.toDouble(),
       lastUpdated: json['lastUpdated'] == null
           ? null
           : DateTime.parse(json['lastUpdated'] as String),
+      isConnected: json['isConnected'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$CellularTowerModelToJson(CellularTowerModel instance) =>
@@ -34,8 +36,10 @@ Map<String, dynamic> _$CellularTowerModelToJson(CellularTowerModel instance) =>
       'signalStrength': instance.signalStrength,
       'status': instance.status,
       'networkType': instance.networkType,
+      'operatorName': instance.operatorName,
       'pingLatency': instance.pingLatency,
       'uploadSpeed': instance.uploadSpeed,
       'downloadSpeed': instance.downloadSpeed,
       'lastUpdated': instance.lastUpdated?.toIso8601String(),
+      'isConnected': instance.isConnected,
     };

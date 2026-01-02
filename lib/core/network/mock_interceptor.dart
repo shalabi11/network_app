@@ -53,6 +53,7 @@ class MockInterceptor extends Interceptor {
         'signalStrength': 85,
         'status': 'active',
         'networkType': '4G LTE',
+        'operatorName': 'Vodafone',
         'pingLatency': 25,
         'uploadSpeed': 15.5,
         'downloadSpeed': 45.2,
@@ -114,6 +115,7 @@ class MockInterceptor extends Interceptor {
     final towers = <Map<String, dynamic>>[];
     final networkTypes = ['4G LTE', '5G', '4G', '3G'];
     final statuses = ['active', 'active', 'active', 'maintenance'];
+    final operatorNames = ['Vodafone', 'Etisalat', 'Orange', 'Zain', 'Ooredoo'];
 
     for (int i = 0; i < count; i++) {
       // Generate random position within ~5km radius
@@ -125,6 +127,7 @@ class MockInterceptor extends Interceptor {
       final status = statuses[_random.nextInt(statuses.length)];
       final isActive = status == 'active';
       final networkType = networkTypes[_random.nextInt(networkTypes.length)];
+      final operatorName = operatorNames[_random.nextInt(operatorNames.length)];
       final signalStrength = isActive
           ? 60 + _random.nextInt(40)
           : 30 + _random.nextInt(30);
@@ -138,6 +141,7 @@ class MockInterceptor extends Interceptor {
         'signalStrength': signalStrength,
         'status': status,
         'networkType': networkType,
+        'operatorName': operatorName,
         'pingLatency': isActive
             ? 15 + _random.nextInt(35)
             : 50 + _random.nextInt(50),
