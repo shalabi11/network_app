@@ -25,6 +25,10 @@ import 'features/speed_test/data/repositories/speed_test_repository_impl.dart';
 import 'features/speed_test/domain/repositories/speed_test_repository.dart';
 import 'features/speed_test/domain/usecases/start_speed_test.dart';
 import 'features/speed_test/presentation/bloc/speed_test_bloc.dart';
+import 'features/towers/presentation/bloc/tower_search_bloc.dart';
+import 'features/towers/domain/services/tower_sort_service.dart';
+import 'features/towers/domain/services/statistics_service.dart';
+import 'features/towers/domain/services/offline_sync_service.dart';
 
 final sl = GetIt.instance;
 
@@ -40,6 +44,7 @@ Future<void> init() async {
     ),
   );
   sl.registerFactory(() => SpeedTestBloc(startSpeedTest: sl()));
+  sl.registerFactory(() => TowerSearchBloc());
 
   // Cubit
   sl.registerLazySingleton(() => ThemeCubit(sl()));
@@ -81,6 +86,11 @@ Future<void> init() async {
   
   // Cache service
   sl.registerLazySingleton(() => CacheService(sl()));
+  
+  // Tower Services
+  sl.registerLazySingleton(() => TowerSortService(sl()));
+  sl.registerLazySingleton(() => StatisticsService());
+  sl.registerLazySingleton(() => OfflineSyncService(sl()));
 
   // ============== External ==============
 
