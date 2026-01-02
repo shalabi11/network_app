@@ -115,39 +115,52 @@ class _ListViewScreenState extends State<ListViewScreen> {
           ),
         ],
       ),
-      body: BlocConsumer<TowerBloc, TowerState>(
-        listener: (context, state) {
-          if (state is TowerPinged) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  '${localizations.pingLatency}: ${state.latency}${localizations.ms}',
-                ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          if (_currentPosition != null) {
+            context.read<TowerBloc>().add(
+              RefreshTowers(
+                latitude: _currentPosition!.latitude,
+                longitude: _currentPosition!.longitude,
               ),
             );
+            // Wait for the towers to load
+            await Future.delayed(const Duration(milliseconds: 500));
           }
         },
-        builder: (context, state) {
-          if (state is TowerLoading) {
-            return const TowerListShimmer();
-          }
+        child: BlocConsumer<TowerBloc, TowerState>(
+          listener: (context, state) {
+            if (state is TowerPinged) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${localizations.pingLatency}: ${state.latency}${localizations.ms}',
+                  ),
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is TowerLoading) {
+              return const TowerListShimmer();
+            }
 
-          if (state is TowerError) {
-            return app_error.ErrorWidget(
-              message: state.message,
-              onRetry: _getCurrentLocation,
-              retryText: localizations.retry,
-            );
-          }
+            if (state is TowerError) {
+              return app_error.ErrorWidget(
+                message: state.message,
+                onRetry: _getCurrentLocation,
+                retryText: localizations.retry,
+              );
+            }
 
-          if (state is TowerLoaded || state is TowerPinged) {
-            final towers = state is TowerLoaded
-                ? state.towers
-                : (state as TowerPinged).towers;
+            if (state is TowerLoaded || state is TowerPinged) {
+              final towers = state is TowerLoaded
+                  ? state.towers
+                  : (state as TowerPinged).towers;
 
-            if (towers.isEmpty) {
-              return EmptyStateWidget(
-                message: localizations.noTowers,
+              if (towers.isEmpty) {
+                return EmptyStateWidget(
+                  message: localizations.noTowers,
                 onRetry: _getCurrentLocation,
                 retryText: localizations.retry,
               );
@@ -192,8 +205,9 @@ class _ListViewScreenState extends State<ListViewScreen> {
             );
           }
 
-          return const Center(child: CircularProgressIndicator());
-        },
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
   }

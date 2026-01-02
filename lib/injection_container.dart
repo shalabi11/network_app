@@ -1,10 +1,13 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/network/mock_interceptor.dart';
+import 'core/network/retry_interceptor.dart';
+import 'core/services/cache_service.dart';
 import 'core/utils/logger.dart';
 import 'core/network/network_info.dart';
 import 'features/settings/presentation/cubit/language_cubit.dart';
@@ -75,6 +78,9 @@ Future<void> init() async {
   // ============== Core ==============
 
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+  
+  // Cache service
+  sl.registerLazySingleton(() => CacheService(sl()));
 
   // ============== External ==============
 
@@ -83,9 +89,9 @@ Future<void> init() async {
     final dio = Dio(
       BaseOptions(
         baseUrl: AppConstants.baseUrl,
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-        sendTimeout: const Duration(seconds: 60),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -97,16 +103,32 @@ Future<void> init() async {
     if (AppConstants.useMockData) {
       dio.interceptors.add(MockInterceptor());
     }
-
-    // Add logging interceptor in debug mode
+    
+    // Add retry interceptor for better reliability
     dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        error: true,
-        logPrint: (obj) => AppLogger.debug(obj.toString()),
+      RetryInterceptor(
+        dio: dio,
+        logPrint: kDebugMode ? (message) => AppLogger.debug(message) : null,
       ),
     );
+
+    // LogInterceptor is disabled to improve performance
+    // Enable it only if you need detailed HTTP logging for debugging
+    // if (kDebugMode) {
+    //   dio.interceptors.add(
+    //     LogInterceptor(
+    //       requestBody: false,
+    //       responseBody: false,
+    //       error: true,
+    //       logPrint: (obj) {
+    //         final message = obj?.toString() ?? '';
+    //         if (message.isNotEmpty) {
+    //           AppLogger.debug(message);
+    //         }
+    //       },
+    //     ),
+    //   );
+    // }
 
     return dio;
   });
