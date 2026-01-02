@@ -17,7 +17,16 @@ class OfflineSyncService {
   Future<void> saveOfflineData(List<CellularTower> towers) async {
     try {
       final jsonData = jsonEncode(
-        towers.map((t) => t.toJson()).toList(),
+        towers.map((t) => {
+          'id': t.id,
+          'name': t.name,
+          'latitude': t.latitude,
+          'longitude': t.longitude,
+          'signalStrength': t.signalStrength,
+          'status': t.status,
+          'networkType': t.networkType,
+          'operatorName': t.operatorName,
+        }).toList(),
       );
       await prefs.setString(_offlineDataKey, jsonData);
       await prefs.setInt(

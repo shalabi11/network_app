@@ -1,5 +1,4 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 /// Cache management service for storing and retrieving data locally
 class CacheService {

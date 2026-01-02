@@ -55,7 +55,6 @@ class SortOptionsBottomSheet extends StatelessWidget {
     String label,
     SortOption option,
   ) {
-    final isSelected = currentSortOption == option;
     return ListTile(
       leading: Radio<SortOption>(
         value: option,

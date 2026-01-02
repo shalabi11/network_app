@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/tower_search_bloc.dart';
 import '../bloc/tower_search_event.dart';
 import '../bloc/tower_state.dart' as tower_state;
-import '../bloc/tower_search_state.dart';
 
 class TowerSearchBar extends StatefulWidget {
   final tower_state.TowerState currentTowerState;

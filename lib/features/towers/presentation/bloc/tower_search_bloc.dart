@@ -31,10 +31,9 @@ class TowerSearchBloc extends Bloc<TowerSearchEvent, TowerSearchState> {
     // Search by multiple criteria
     final results = event.allTowers.where((tower) {
       return tower.id.toLowerCase().contains(query) ||
-          tower.mnc.toString().contains(query) ||
-          tower.mcc.toString().contains(query) ||
-          tower.lac.toString().contains(query) ||
-          tower.cellId.toString().contains(query);
+          tower.name.toLowerCase().contains(query) ||
+          (tower.operatorName?.toLowerCase().contains(query) ?? false) ||
+          (tower.networkType?.toLowerCase().contains(query) ?? false);
     }).toList();
 
     if (results.isEmpty) {

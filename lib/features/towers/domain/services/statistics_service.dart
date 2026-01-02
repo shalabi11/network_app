@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:network_app/features/towers/domain/entities/cellular_tower.dart';
 
 /// Tower statistics model
@@ -49,7 +50,7 @@ class StatisticsService {
 
     // Signal statistics
     final signals = towers
-        .map((t) => t.signalStrength ?? 0)
+        .map((t) => t.signalStrength)
         .where((s) => s != 0)
         .toList();
     final avgSignal = signals.isEmpty ? 0.0 : signals.reduce((a, b) => a + b) / signals.length;
@@ -59,14 +60,14 @@ class StatisticsService {
     // Network type statistics
     final networkMap = <String, int>{};
     for (var tower in towers) {
-      final key = 'MNC ${tower.mnc}';
+      final key = tower.operatorName ?? 'Unknown';
       networkMap[key] = (networkMap[key] ?? 0) + 1;
     }
 
     // Radio type statistics
     final typeMap = <String, int>{};
     for (var tower in towers) {
-      final type = tower.type ?? 'Unknown';
+      final type = tower.networkType ?? 'Unknown';
       typeMap[type] = (typeMap[type] ?? 0) + 1;
     }
 
@@ -100,8 +101,11 @@ class StatisticsService {
   double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const p = 0.017453292519943295; // Math.PI / 180
     final a = 0.5 -
-        (lat2 - lat1) * p / 2 * (lat2 - lat1) * p / 2.cos() +
-        (lon2 - lon1) * p / 2 * (lon2 - lon1) * p / 2.cos() * (lat1 * p).cos() * (lat2 * p).cos();
-    return 12742 * (a.asin()); // 2 * R; R = 6371 km
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) *
+            cos(lat2 * p) *
+            (1 - cos((lon2 - lon1) * p)) /
+            2;
+    return 12742 * asin(sqrt(a)); // 2 * R; R = 6371 km
   }
 }

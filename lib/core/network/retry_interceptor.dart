@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../utils/logger.dart';
 
 /// Retry interceptor that automatically retries failed requests
 class RetryInterceptor extends Interceptor {

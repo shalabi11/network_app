@@ -1,6 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:network_app/features/towers/domain/entities/cellular_tower.dart';
 
+import 'dart:math';
+
 enum SortOption {
   name,
   distance,
@@ -50,12 +52,12 @@ class TowerSortService {
         break;
 
       case SortOption.signal:
-        sorted.sort((a, b) => (b.signalStrength ?? 0).compareTo(a.signalStrength ?? 0));
+        sorted.sort((a, b) => (b.signalStrength).compareTo(a.signalStrength));
         break;
 
       case SortOption.newest:
-        // Assuming newest means highest cellId
-        sorted.sort((a, b) => b.cellId.compareTo(a.cellId));
+        // Assuming newest means highest signal
+        sorted.sort((a, b) => b.signalStrength.compareTo(a.signalStrength));
         break;
     }
 
@@ -69,21 +71,16 @@ class TowerSortService {
     double lat2,
     double lon2,
   ) {
-    const earthRadius = 6371; // Radius in km
-    final dLat = _toRad(lat2 - lat1);
-    final dLon = _toRad(lon2 - lon1);
-
-    final a = (1 - (dLat / (2 * 3.14159)).cos()) / 2 +
-        (dLat / (2 * 3.14159)).cos() *
-            (dLon / (2 * 3.14159)).cos() *
-            (1 - ((lon2 - lon1) / (2 * 3.14159)).cos()) /
+    const p = 0.017453292519943295; // Math.PI / 180
+    final a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) *
+            cos(lat2 * p) *
+            (1 - cos((lon2 - lon1) * p)) /
             2;
-
-    final c = 2 * (a.asin());
-    return earthRadius * c;
+    const earthRadius = 6371; // Radius in km
+    return earthRadius * 2 * asin(sqrt(a));
   }
-
-  double _toRad(double degree) => degree * 3.14159 / 180;
 
   /// Add tower to favorites
   Future<void> addFavorite(String towerId) async {
